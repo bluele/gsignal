@@ -22,18 +22,18 @@ import (
 )
 
 func main() {
-  gsg := gsignal.NewWatcher()
-  gsg.Watch(func(sig os.Signal) {
+  watcher := gsignal.NewWatcher()
+  watcher.Watch(func(sig os.Signal) {
     log.Println("Catch signal: ", sig)
     os.Exit(0)
   }, os.Interrupt, syscall.SIGTERM)
 
-  gsg.Watch(func(sig os.Signal) {
+  watcher.Watch(func(sig os.Signal) {
     log.Println("Ignore signal: ", sig)
   }, syscall.SIGHUP)
 
   // start watching specified signal numbers.
-  gsg.Run()
+  watcher.Run()
 
   log.Println("PID: ", os.Getpid())
   log.Println("Sleep...")
