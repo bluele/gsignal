@@ -61,18 +61,6 @@ func (gs *Watcher) GetCallback(sig os.Signal) (CallbackHandler, bool) {
 	return nil, false
 }
 
-// send SIGALRM to this process.
-func (gs *Watcher) Alarm(td time.Duration) {
-	gs.SendSignal(syscall.SIGALRM, td)
-}
-
-// send specified signal to this process.
-func (gs *Watcher) SendSignal(sig syscall.Signal, td time.Duration) {
-	time.AfterFunc(td, func() {
-		syscall.Kill(os.Getpid(), sig)
-	})
-}
-
 // start watching specified signals asynchronously.
 func (gs *Watcher) Run() {
 	chann := make(chan os.Signal, 1)
@@ -114,4 +102,21 @@ func (gs *Watcher) Stop() {
 func (gs *Watcher) Reload() {
 	gs.Stop()
 	gs.Run()
+}
+
+// send SIGALRM to this process.
+func Alarm(td time.Duration) {
+	SendSignal(td, syscall.SIGALRM)
+}
+
+// delay: delay for sending signal.
+// sigs: signal numbers
+// send specified signal to this process.
+func SendSignal(delay time.Duration, sigs ...syscall.Signal) {
+	time.AfterFunc(delay, func() {
+		pid := os.Getpid()
+		for _, sig := range sigs {
+			syscall.Kill(pid, sig)
+		}
+	})
 }
