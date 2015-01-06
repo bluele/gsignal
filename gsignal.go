@@ -105,8 +105,8 @@ func (gs *Watcher) Reload() {
 }
 
 // send SIGALRM to this process.
-func Alarm(td time.Duration) {
-	SendSignal(td, syscall.SIGALRM)
+func Alarm(delay time.Duration) {
+	SendSignal(delay, syscall.SIGALRM)
 }
 
 // delay: delay for sending signal.
