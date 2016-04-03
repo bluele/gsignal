@@ -30,23 +30,27 @@ func NewWatcher() *Watcher {
 
 // cb: callback hander when watcher catches specified signals.
 // signals: signals to monitor.
-func (gs *Watcher) Watch(cb CallbackHandler, signals ...os.Signal) {
+func (gs *Watcher) Watch(cb CallbackHandler, signals ...os.Signal) *Watcher {
 	gs.mu.Lock()
 	defer gs.mu.Unlock()
 
 	for _, sg := range signals {
 		gs.callbacks[sg] = cb
 	}
+
+	return gs
 }
 
 // signals: signals to unmonitor.
-func (gs *Watcher) UnWatch(signals ...os.Signal) {
+func (gs *Watcher) UnWatch(signals ...os.Signal) *Watcher {
 	gs.mu.Lock()
 	defer gs.mu.Unlock()
 
 	for _, sg := range signals {
 		delete(gs.callbacks, sg)
 	}
+
+	return gs
 }
 
 // get callback handler of specified signal and boolean value for exists callback.
